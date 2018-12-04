@@ -1,0 +1,19 @@
+procedure main
+
+select * from purchase-order-line
+				 where po-backorder-qty <> 0
+				 //and po-order-no = lp-po 
+before
+//
+detail
+//
+after
+	if purchase-order-line = 0
+		message-box
+			title "error"
+			MSG_BOX_YES_NO_CANCEL
+	endif
+//
+end-select
+
+end-procedure

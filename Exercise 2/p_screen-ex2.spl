@@ -1,0 +1,53 @@
+
+object tmp-customer-data type memory
+record
+	tmp-customer-id			like client-accountcode
+	tmp-name 				like shortname
+	tmp-mobile-number 		pic 9(10)
+	tmp-add-1 				pic x(30)
+	tmp-add-2 				pic x(30)
+	tmp-suburb 				pic x(30)
+	tmp-pc 					pic 9(4)
+end-record
+key is tmp-customer-id
+//
+procedure main
+	//
+	open tmp-customer-data temporary truncate
+	//
+	do s_display-customer-information //collect customer data
+	//
+end-procedure
+
+screen s_display-customer-information //collect customer data
+	//
+	window @1,1 to @12,40 title "Customer Data Collection"
+	//
+	local
+		lf-ok 					type boolean
+	//
+	select * 
+		from deb-master
+		allow entry show find 
+	datagrid occurs 10 //show record to display
+before
+	
+detail
+	display accountcode @2,10
+		title "ID"
+			Flashing
+		color RED on YELLOW
+			//
+			//
+			//
+	display shortname @2,20
+		title "Name"
+	//---------------------------------
+	//
+	//*****EXCERCISE*******
+	//ENTER CODE TO COLLECT MOBILE NO, ADDRESS AND POST CODE
+	//VALIDATE MOBILE NO.
+	//VALIDATE POST CODE
+	//PROVIDE HELP MENU FOR THE POST CODE AND SUBURB
+end-screen//s_collect-customer-information //collect customer data
+

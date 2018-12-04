@@ -1,0 +1,239 @@
+/*
+procedure main
+    report "test"
+        name is test_joel
+        no-xml
+        print "Joel Martinez" col 1 
+              "Chintan patel" col 30 
+                        on test_joel
+    report finished
+end-procedure */
+//----------------------------------------------------------------------------
+// exercise 1 - write a report on program-flow-data in xml
+//----------------------------------------------------------------------------
+/*
+procedure main
+    //
+    report "Program Data"
+        Name is Program_Report
+    select * 
+    from program-flow-data
+    before
+    detail
+                print   pfd-prog-type       col 1
+                        pfd-batch-no        col 20
+                        pfd-date[1]         col 30
+                        batch-date-time     col 40
+                        pfd-key-1           col 50
+                    on Program_Report
+    after
+    end-select
+    //
+    report finished
+end-procedure
+*/
+//----------------------------------------------------------------------------
+// exercise 2 - ask users for list of customers, quote no. and date range
+//              For help quote no. pop up clib to help |    stock-master?
+//
+// report will contain number of quotes accepted within given date range
+// quote-master file is the table
+//----------------------------------------------------------------------------
+#include "../../../cus/include/i_rbtchproc.spl"
+link "clib/c_enquiry.spl"
+//----------------------------------------------------------------------------
+field 
+    show-obsolete       pic x(1)                    //
+    //quote-number        like quote-no               //
+    start-date          like acceptance-date        //
+    end-date            like acceptance-date        //
+    customer-list       like client-accountcode     //
+    //code                pic x(10) type string       //
+    customer            like customer-list          //
+    program-name        pic x(80)	type string     //
+//----------------------------------------------------------------------------
+procedure main
+//
+//
+set program-name = "Exercise on queries"
+set rbtchproc-report-started = FALSE
+set rbtchproc-program-name = program-name
+set rbtchproc-report-name = program-name
+//
+RBTCHPROC_RUN_PROGRAM(rbtchproc-report-name)
+//
+end-procedure   //main -------------------------------------------------------
+
+screen rbtchproc-report-parameters
+	window @1,1 to @16,60 title "customer-list"
+	allow entry
+//
+before
+	box @1,1 to @6,60 title "Report Options"
+	box @7,1 to @15,60 title "Report Ranges"
+detail
+	//--------------------------------------------------
+	accept show-obsolete @3,28
+		title "Show Obsolete Products (Y/N):"
+		help "Do you want to show obsolete products?"
+		uppercase
+	//
+    accept start-date @9,28
+		title "Start date:"
+		optional
+		help "Enter a valid start date"
+	on help-key
+	/* 	spl 'lib/h4enqstk.spl'
+			parameters code SPACES SPACES
+			returning code 
+		if code != SPACES
+			set start-date = code
+			re-enter optional
+		end-if  */
+	endon
+	//
+	accept end-date @10,28
+		title "End date:"
+		optional  
+		help "Enter a valid End date"
+	on help-key
+/*		spl 'lib/h4enqstk.spl'
+			parameters code SPACES SPACES
+			returning code
+		if code != SPACES
+			set end-date = code
+			re-enter optional
+		end-if */
+	endon		
+	//
+	accept customer-list @11,28
+		title "Client AccountCode:"
+		optional
+		help "Enter a valid Client"
+	on help-key
+ 		spl 'lib/h1enqdeb.spl'
+			parameters 'PG' customer '-e' '-enabled'
+			returning customer
+		if customer != SPACES
+			set customer-list = customer
+			re-enter optional
+		end-if 
+	endon
+	//
+	confirm
+	confirmed
+		RBTCHPROC_EXECUTION
+		exit
+	end-confirm
+end-screen //User_Filters-------------------------------------------------------
+
+procedure rbtchproc-start-report
+	report rbtchproc-report-name
+		header is f_page-header
+		width 100
+		no-message
+		no-xml
+	set rbtchproc-report-started = TRUE
+end-procedure// start-report-----------------------------------------------------
+
+procedure rbtchproc-report-detail
+	window @19,44 to @23,80
+		title "Report Progress"
+		colour white
+		no-hide
+	//
+	if not rbtchproc-report-started
+		do rbtchproc-start-report
+		if rbtchproc-in-background
+			RBTCHPROC_MESSAGE_REPORT_STARTED
+		else
+			display bitmap concat(getenv('BMS'),"/images/repedge.gif") @19,44
+			display "Report:" @20,59 background right
+			display spool-file-name() @20,68 pic x(12) foreground prompt
+			display "Now at:" @23,45 background prompt left
+			page
+		endif
+	endif
+	do f_print-report
+	do f_report-footer
+end-procedure //rbtchproc-report-detail ------------------------------------------
+
+procedure f_page-header
+	print	"JM"					col 1
+			company-name			col 3
+			rbtchproc-report-name	col 35
+			tod()					col 70
+			today()					col 79
+			"Page:"					col 91	
+			page-no					col 97	pic z(2)9
+	skip
+
+	print	"quote number"			col 1
+			"start date"			col 40
+			"end date"				col 60
+			"customerID"			col 75
+			"customer name"			col 90
+
+	print 100'-'
+end-procedure //f_page-header --------------------------------------------------
+
+procedure f_print-report
+    //
+	local
+	lf_customer-name 	like shortname
+	//
+    select * from quote-master-file
+        where client-accountcode = customer-list
+        and quote-date between start-date and end-date
+        /* and (show-obsolete = "Y" or (show-obsolete = "N"))
+		*/before 
+        // - display the process in window
+        if not rbtchproc-in-background
+			display customer-list @23,54 foreground prompt
+		endif
+		//    show-obsolete
+		detail
+		get deb-master 
+			key is client-accountcode
+		on error
+			set lf_customer-name = "invalid customer"
+		else
+		 	set lf_customer-name = shortname
+		end-on
+		//
+        print 
+				quote-no			col 1
+				start-date			col 40
+				end-date			col 60
+				customer-list		col 75
+				lf_customer-name	col 90
+        //
+        after
+        end-select
+        //
+        if not rbtchproc-in-background
+		display "progress" @23,54 foreground prompt
+	endif
+end-procedure// f_print-report ---- print the report------------------------------
+
+procedure f_report-footer
+	need 12
+	skip 3
+	print 100"_"						col 3
+	skip
+	print	"Report Options:"			col 10	bold
+	print	"Show Obsolete Products:"   col 17
+			show-obsolete			    col 45
+	skip
+	print	"Report Ranges:"			col 10	bold
+	print	"start Date:" 				col 17 
+					          //  col 37
+				" - "			        col 48
+				start-date		        col 58
+	print	"end date:"					col 17
+				//start_stockgroup	    col 37
+				" - "			        col 48
+				end-date		    col 58
+	skip
+	RBTCHPROC_SCREEN_FINISH_MESSAGE(rbtchproc-report-started,23,45)
+    end-procedure //--------------------------------------------------------------

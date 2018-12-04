@@ -1,0 +1,44 @@
+procedure main
+//
+do p_query-procedure
+//
+end-procedure
+
+procedure p_query-procedure
+//
+// 
+report 'table update'
+//--------------------------------------------------------
+    select * 
+    from bom-formula-add-strength
+    where bf-str-additional-stockid = 'SILL TRAY - STD'
+    for-update
+//--------------------------------------------------------    
+//
+detail 
+//-----------------------------
+        print
+             bf-stock-code          col  1
+             bf-str-type            col 15
+        //
+        no-newline
+//---------------------------------
+    
+    set bf-str-type = 'S'
+    update bom-formula-add-strength
+    //
+    on error
+        print
+            " | error"                 col 25 
+    //
+    else
+        print
+            " | success"               col 25 
+    endon
+    //
+    //
+     end-select
+//------------------------------------
+    report finished
+//
+end-procedure

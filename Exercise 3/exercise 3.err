@@ -1,0 +1,8 @@
+INFO  Custom include path: - '/pro/pronto/cus/include'
+INFO  Custom include path: - '/pro/pronto/cus'
+INFO  Custom include path: - '/pro/pronto/bms/include'
+INFO  Custom include path: - '/pro/pronto/bms'
+jmtest/exercise 3.spl, line 64: ERROR  REVIEW field/expr. not at start of review area - '10'
+jmtest/exercise 3.spl, line 69: ERROR  REVIEW field/expr. not at start of review area - '10'
+jmtest/exercise 3.spl, line 88: ERROR  REVIEW field/expr. not at start of review area - '2'
+jmtest/exercise 3.spl, line 90: ERROR  Syntax error - 'help'

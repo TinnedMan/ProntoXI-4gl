@@ -1,0 +1,6 @@
+INFO  Custom include path: - '/pro/pronto/cus/include'
+INFO  Custom include path: - '/pro/pronto/cus'
+INFO  Custom include path: - '/pro/pronto/bms/include'
+INFO  Custom include path: - '/pro/pronto/bms'
+training/jmtest/queries/select/selecttest.spl, line 11: ERROR  Field not defined - 'purchase-order-line'
+training/jmtest/queries/select/selecttest.spl, line 14: ERROR  Alpha-literal expected - '14'

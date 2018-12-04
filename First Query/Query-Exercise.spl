@@ -1,0 +1,48 @@
+Procedure Main 
+//
+    do s-display-info
+//
+end-procedure // initialise the display 
+
+screen s-display-info
+
+    window @1,1 to @30,60 title "display and modify information"
+    //
+    select *
+    from program-flow-data
+    //
+    datagrid occurs 12
+//
+allow entry correct remove find 
+//
+before
+//---------------------------
+//---------------------------
+detail
+//---------------------------
+//---------------------------
+    accept pfd-prog-type @1,2
+    help "Program Type"
+        show-value 
+        
+    //
+    accept pfd-batch-no @1,3
+        title "test"
+    //
+    accept pfd-date[1] @1,4
+        title "date"
+    //
+    accept batch-date-time @1,6
+        title "date-time"
+    //
+    display pfd-key-1 @1,7
+        title "key-1"
+    //
+    //
+    display pfd-batch-no @1,8
+    //
+after
+//---------------------------
+//---------------------------
+
+end-screen //

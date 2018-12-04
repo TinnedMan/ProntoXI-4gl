@@ -1,0 +1,51 @@
+//exercise 2 
+procedure main
+	//
+	local
+		lf-product-price        pic 9(5).9(2)
+        lf-gst-precent          pic 9(8).9(2)
+        lf-gst-amt              pic 9(8).9(2) 
+    // 
+    set lf-gst-precent = 10
+    //
+    do s-get-price-amt  // prompt for product price
+        parameters lf-gst-precent 
+        //
+        returning lf-product-price lf-gst-amt       
+    //
+    message concat("Gross", str(lf-product-price), " " , "GST" str(lf-gst-amt),"Value of lp")  
+end-procedure
+
+
+screen s-get-price-amt
+    parameters 
+        lp-gst-amt             pic 9(5).9(2) //
+         //
+    returning
+        lr-xgst-price          pic 9(8).9(2)
+        lr-totalgst            pic 9(8).9(2) // lr retruning value
+        //
+    local     
+        lf-product-price       pic 9(8).9(2)
+        lf-discount-amt        pic 9(8).9(2) //lf is local variable
+    //  
+	//
+    window @1,1 to @25,40 title "price calculation"
+    //------------------------------------
+    accept lf-product-price @2,14
+        title "gross product price"
+    validation
+    end-validations
+    //---------------------------------- 
+    accept lf-discount-amt @3,14
+        title "discount amount"
+    validation
+    end-validations
+    //-----------------------------------
+    confirm auto
+	confirmed
+	    set lr-xgst-price = lf-product-price - lf-discount-amt 
+        set lr-totalgst = lr-xgst-price * (lp-gst-amt / 100)
+	    exit
+	end-confirm
+ end-screen //f_window_prompt

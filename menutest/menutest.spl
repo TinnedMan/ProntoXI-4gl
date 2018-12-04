@@ -1,0 +1,81 @@
+// create a menu, tree menu and combo menu
+// make the menu run to previous programs
+//
+procedure main
+
+do m-main-menu
+
+end-procedure
+
+menu m-main-menu
+//
+window @1,1 to @18,30
+    title "Mytestmenu"
+    no-hide
+//
+before
+//1
+box @1,1 to @18,30 title SPACES									//4.00
+												
+detail
+    //
+    option "Hello world program" @2,3 to @3,28
+        scale 150 text-position 5
+        CALL "../training/jmtest/Hello World/p_hello_world.op7"
+    //
+    option "screen exercise program" @4,3 to @5,28
+    scale 150 text-position 5
+        CALL "../training/jmtest/Exercise 2/p_screen-ex2.op7"
+    // 
+    option "screen exercise program2" @6,3 to @7,28
+    scale 150 text-position 5
+        CALL "../training/jmtest/Exercise 3/exercise 3.op7"
+    // 
+    option "Query Exercise" @8,3 to @9,28
+    scale 150 text-position 5
+        CALL "../training/jmtest/First Query/Query-Exercise.op7"
+    //
+    option "tree menu" @12,3 to @13,12
+        color is red on 0
+    scale 100 text-position 5
+        do m-tree-menu
+        exit
+        //
+end-menu //--------------------------------------------------------------------
+
+menu m-tree-menu
+//
+window @1,1 to @14,30
+    title "Mytestmenu"
+    tree-menu
+//
+before
+//
+box @1,1 to @14,30 title SPACES	
+//
+detail
+    //
+     option "Hello world program" @2,3 to @3,28
+        scale 150 text-position 5
+        CALL "../training/jmtest/Hello World/p_hello_world.op7"
+    //
+    option "screen exercise program" @4,3 to @5,28
+    scale 150 text-position 5
+        CALL "../training/jmtest/Exercise 2/p_screen-ex2.op7"
+    // 
+    option "screen exercise program2" @6,3 to @7,28
+    scale 150 text-position 5
+        CALL "../training/jmtest/Exercise 3/exercise 3.op7"
+    // 
+    option "Query exercise" @8,3 to @9,28
+    scale 150 text-position 5
+        CALL "../training/jmtest/First Query/Query-Exercise.op7"
+    //
+
+    option "back to main menu" @12,3 to @13,12
+    scale 100 text-position 5
+    colour is red on 0
+    //
+         do m-main-menu    
+        //
+end-menu //---------------------------------------------------------------------

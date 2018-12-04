@@ -1,0 +1,151 @@
+
+object tmp-customer-data type memory
+record
+	tmp-customer-id			like client-accountcode
+	tmp-name 				like shortname
+	tmp-mobile-number 		pic 9(10)
+	tmp-add-1 				pic x(30)
+	tmp-add-2 				pic x(30)
+	tmp-suburb 				pic x(30)
+	tmp-pc 					pic 9(4)
+end-record
+key is tmp-customer-id
+//
+procedure main
+	//
+	open tmp-customer-data temporary truncate
+	//
+	do s_collect-customer-information //collect customer data
+	//
+	do s_display-customer-information //display customer data
+end-procedure
+
+screen s_collect-customer-information //collect customer data
+	//
+	window @1,1 to @15,40 title "Customer Data Collection"
+	//
+	local
+		lf-ok 					type boolean
+	//
+	select *
+		from tmp-customer-data
+		allow show find entry remove correct
+before
+	box @1,1 to @6,40 title "Name"
+	box @7,1 to @13,40 title "Contact Details"
+detail
+	accept tmp-customer-id @2,10
+		title "ID"
+		help "Enter Customer ID"
+		Flashing
+		color RED on YELLOW
+			//
+	on help-key
+		spl "lib/h1enqdeb"
+            parameters SPACES
+            returning tmp-customer-id lf-ok
+            //
+            display tmp-customer-id @2,10
+	end-on
+	//
+	validations
+		get deb-master // get - grab one record at a time
+			key is tmp-customer-id
+		on error
+			message "Error: Invalid ID - Please reenter"
+			reenter
+		else
+			 if tmp-name = SPACES
+			 	set tmp-name = shortname
+			 	display tmp-name @3,10
+			 end-if
+		end-on
+	end-validations
+	//
+	accept tmp-name @3,10
+		title "Name"
+		help "Customer Name"
+		show-value
+	//--------------------------------- mobile
+	accept tmp-mobile-number  @8,10
+		title "Mob"
+			//
+			//
+	validations
+		if tmp-mobile-number = 0
+		reenter
+		end-if
+	end-validations
+	//----------------------------------postcode
+	accept tmp-pc @9,10
+		title "PostCode"
+	//----------------------------------suburb
+	accept tmp-suburb @10,10
+		title "suburb"
+	//----------------------------------adress line 1
+	accept tmp-add-1 @11,12
+		title "address line 1"
+	
+			//*****EXCERCISE*******
+			//ENTER CODE TO COLLECT MOBILE NO, ADDRESS AND POST CODE
+			//VALIDATE MOBILE NO.
+			//VALIDATE POST CODE
+			//PROVIDE HELP MENU FOR THE POST CODE AND SUBURB
+end-screen//s_collect-customer-information //collect customer data
+
+screen s_display-customer-information //display customer data
+	window @1,1 to @12,70 title "Customer Data Collection"
+	local
+		lf-ok 					type boolean
+	//
+	select *
+		from tmp-customer-data
+		allowed show find entry remove correct
+		datagrid occurs 11
+detail
+	accept tmp-customer-id @1,1
+		title "ID"
+		help "Enter Customer ID"
+	//
+	on help-key
+		spl "lib/h1enqdeb"
+            parameters SPACES
+            returning tmp-customer-id lf-ok
+            //
+	end-on
+	validations
+		get deb-master
+			key is tmp-customer-id
+		on error
+			message "Error: Invalid ID - Please reenter"
+			reenter
+		else
+			// if tmp-name = SPACES
+			// 	set tmp-name = shortname
+			// 	display tmp-name @3,10
+			// 	pause
+			// end-if
+		end-on
+	end-validations
+	//
+	accept tmp-name @1,2
+		title "Name"
+		help "Customer Name"
+	//
+	display tmp-mobile-number @1,3
+		title "Mob"
+	display tmp-add-1 @1,4
+		title "Add1"
+	display tmp-add-2 @1,5
+		title "Add2"
+	display tmp-suburb @1,6
+		title "Sub"
+	display tmp-pc @1,7
+		title "PC"
+	//
+	confirm auto
+	confirmed
+	end-confirm
+end-screen//s_display-customer-information //display customer data
+//**EXCERCISE - WRITE A COMBINATION OF DATA GRID AND FIXED SCREEN, 
+//you can edit contact informaiton on the data grid and customer id and name will be displayed on a fixed box.

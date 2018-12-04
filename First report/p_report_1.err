@@ -1,0 +1,6 @@
+INFO  Custom include path: - '/pro/pronto/cus/include'
+INFO  Custom include path: - '/pro/pronto/cus'
+INFO  Custom include path: - '/pro/pronto/bms/include'
+INFO  Custom include path: - '/pro/pronto/bms'
+training/jmtest/First report/p_report_1.spl, WARNING  Field not contained in any objects referenced - 'company-name'
+training/jmtest/First report/p_report_1.spl, INFO  Routine declared but not referenced - 'f_rbtchproc-completed-message'
